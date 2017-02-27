@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Ledger</string>
+    <string name="action_settings">Settings</string>
+    <string name="balances">Balances</string>
+    <string name="name">Name</string>
+    <string name="date">Date</string>
+</resources>
