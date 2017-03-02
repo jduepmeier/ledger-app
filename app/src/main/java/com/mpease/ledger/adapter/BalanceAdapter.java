@@ -74,7 +74,7 @@ public class BalanceAdapter
         if (convertView == null) {
             convertView = View.inflate(context, R.layout.edit_balances, null);
         }
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("0.00");
 
         AutoCompleteTextView account_name = (AutoCompleteTextView) convertView.findViewById(R.id.balance_name);
         if (account_name != null && account_name.getText().length() < 1) {

@@ -35,19 +35,6 @@ public class LedgerOverview extends AppCompatActivity {
     private LedgerAdapter adapter;
     private Map<Integer, Boolean> checked;
 
-    public List<Balance> dummyBalances(int i) {
-        Account account = dbHelper.getOrCreateAccount("Expenses:Account " + i, "Account für Nummer " + i, "Account" + i);
-        Account account2 = dbHelper.getOrCreateAccount("Expenses:Account " + (i + 1), "Account für Nummer " + (i + 1), "Account" + (i + 1));
-        double value = i * 10.52;
-
-        List<Balance> balances = new ArrayList<>();
-
-        balances.add(new Balance(account, value));
-        balances.add(new Balance(account2, -value));
-
-        return balances;
-    }
-
     public void gotoAddView(View view) {
         Intent intent = new Intent(this, EditEntryActivity.class);
         startActivityForResult(intent, 1);

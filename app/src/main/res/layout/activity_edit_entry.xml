@@ -9,6 +9,15 @@
     tools:menu="edit_menu"
     tools:context="com.mpease.ledger.EditEntryActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
     <TextView
         android:text="@string/date"
         android:layout_width="match_parent"
@@ -26,14 +35,17 @@
         android:text="@string/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView2" />
+        android:id="@+id/textView2">
+    </TextView>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/edit_name" />
+        android:id="@+id/edit_name">
+        <requestFocus />
+    </EditText>
 
     <TextView
         android:text="@string/balances"
@@ -47,6 +59,7 @@
         android:ems="10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:selectAllOnFocus="true"
         android:id="@+id/edit_value" />
 <!--
     <ListView

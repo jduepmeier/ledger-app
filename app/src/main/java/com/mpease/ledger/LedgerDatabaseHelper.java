@@ -62,6 +62,12 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        db.execSQL("PRAGMA foreign_keys=ON;");
+    }
+
     public List<Balance> getBalances(int id) {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM balances JOIN accounts ON (account_id = accounts.id) WHERE entry_id = ?";

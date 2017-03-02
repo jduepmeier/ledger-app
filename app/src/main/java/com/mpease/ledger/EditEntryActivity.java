@@ -3,10 +3,12 @@ package com.mpease.ledger;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,6 +39,8 @@ public class EditEntryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         dbhelper = new LedgerDatabaseHelper(this);
         setContentView(R.layout.activity_edit_entry);
 
@@ -44,9 +48,26 @@ public class EditEntryActivity extends AppCompatActivity {
 
         TextView view = (TextView) findViewById(R.id.edit_date);
         view.setText(df.format(new Date()));
+
+        TextView valueView = (TextView) findViewById(R.id.edit_value);
+        valueView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    saveItem();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
     }
 
 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.edit_menu, menu);
@@ -59,12 +80,14 @@ public class EditEntryActivity extends AppCompatActivity {
         // All other menu item clicks are handled by onOptionsItemSelected()
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.save_item) {
             saveItem();
         } else {
             System.out.println("unkown menu item...");
+            return false;
         }
 
         return true;
