@@ -94,4 +94,19 @@ public class LedgerEntry {
 
         return values;
     }
+
+    public String getExportString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(dateFormat.format(date));
+        builder.append(" ");
+        builder.append(name);
+        builder.append("\n");
+
+        for (Balance b : balances) {
+            builder.append(b.getExportString());
+            builder.append("\n");
+        }
+
+        return builder.toString();
+    }
 }

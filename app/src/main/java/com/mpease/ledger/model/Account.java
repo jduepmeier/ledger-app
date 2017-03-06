@@ -36,6 +36,14 @@ public class Account {
         return alias;
     }
 
+    public String getAliasOrName() {
+        if (alias == null || alias.isEmpty()) {
+            return name;
+        } else {
+            return alias;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

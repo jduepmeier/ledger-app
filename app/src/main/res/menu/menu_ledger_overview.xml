@@ -15,8 +15,8 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/export"
+        android:id="@+id/menu_item_share"
         android:orderInCategory="110"
-        android:title="Export"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom"
+        android:title="Export" />
 </menu>

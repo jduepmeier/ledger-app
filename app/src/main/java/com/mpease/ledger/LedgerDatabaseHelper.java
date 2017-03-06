@@ -100,7 +100,7 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
 
     public List<LedgerEntry> getLedgerEntries() {
         SQLiteDatabase db = getReadableDatabase();
-        String sql = "SELECT * FROM entries";
+        String sql = "SELECT * FROM entries ORDER BY date ASC";
         List<LedgerEntry> entries = new ArrayList<>();
 
         Cursor cursor = db.rawQuery(sql, null);

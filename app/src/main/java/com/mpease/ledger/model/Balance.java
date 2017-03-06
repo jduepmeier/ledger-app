@@ -2,6 +2,8 @@ package com.mpease.ledger.model;
 
 import android.content.ContentValues;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by mpease on 2/23/17.
  */
@@ -88,5 +90,18 @@ public class Balance {
         values.put("value", value);
 
         return values;
+    }
+
+    public String getExportString() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("\t");
+        builder.append(account.getAliasOrName());
+        builder.append("\t");
+        DecimalFormat df = new DecimalFormat("0.00");
+        builder.append(df.format(value));
+        builder.append(" EUR");
+
+        return builder.toString();
     }
 }

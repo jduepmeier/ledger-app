@@ -54,7 +54,7 @@ public class LedgerAdapter
     }
 
     @Override
-    public Object getItem(int position) {
+    public LedgerEntry getItem(int position) {
         return entries.get(position);
     }
 
