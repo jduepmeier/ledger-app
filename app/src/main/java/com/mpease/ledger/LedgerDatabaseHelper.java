@@ -228,4 +228,23 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
 
         return new Account((int) id, name, description, alias);
     }
+
+    public String[] getEntryNames() {
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        String sql = "SELECT DISTINCT name FROM entries";
+
+        Cursor cursor = db.rawQuery(sql, new String[] {});
+
+        int nameColumn = cursor.getColumnIndex("name");
+
+        ArrayList<String> names = new ArrayList<>(cursor.getColumnCount());
+
+        while (cursor.moveToNext()) {
+            names.add(cursor.getString(nameColumn));
+        }
+
+        return names.toArray(new String[0]);
+    }
 }

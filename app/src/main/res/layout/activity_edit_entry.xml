@@ -38,14 +38,14 @@
         android:id="@+id/textView2">
     </TextView>
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/edit_name">
         <requestFocus />
-    </EditText>
+    </AutoCompleteTextView>
 
     <TextView
         android:text="@string/balances"

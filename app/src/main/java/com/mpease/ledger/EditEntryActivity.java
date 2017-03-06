@@ -9,6 +9,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -46,10 +48,17 @@ public class EditEntryActivity extends AppCompatActivity {
 
         df = new SimpleDateFormat("yyyy-MM-dd");
 
-        TextView view = (TextView) findViewById(R.id.edit_date);
+        EditText view = (EditText) findViewById(R.id.edit_date);
         view.setText(df.format(new Date()));
 
-        TextView valueView = (TextView) findViewById(R.id.edit_value);
+        AutoCompleteTextView nameEdit = (AutoCompleteTextView) findViewById(R.id.edit_name);
+
+        String[] names = dbhelper.getEntryNames();
+
+        ArrayAdapter<String> autoCompleteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+        nameEdit.setAdapter(autoCompleteAdapter);
+
+        EditText valueView = (EditText) findViewById(R.id.edit_value);
         valueView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
