@@ -1,5 +1,7 @@
 package com.mpease.ledger;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -46,7 +48,8 @@ public class EditEntryActivity extends AppCompatActivity {
         dbhelper = new LedgerDatabaseHelper(this);
         setContentView(R.layout.activity_edit_entry);
 
-        df = new SimpleDateFormat("yyyy-MM-dd");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        df = new SimpleDateFormat(sharedPreferences.getString("pref_date_format", ""));
 
         EditText view = (EditText) findViewById(R.id.edit_date);
         view.setText(df.format(new Date()));
@@ -130,16 +133,16 @@ public class EditEntryActivity extends AppCompatActivity {
         }
 
         Account one = dbhelper.getOrCreateAccount("Expenses:Dummy1", "first Dummy Account", "Dummy1");
-        Account two = dbhelper.getOrCreateAccount("Expenses:Dummy2", "first Dummy Account", "Dummy2");
+        Account two = dbhelper.getOrCreateAccount("Expenses:Dummy2", "second Dummy Account", "Dummy2");
 
-        Balance a = new Balance(one, value);
-        Balance b = new Balance(two, -value);
+        Balance a = new Balance(this, one, value);
+        Balance b = new Balance(this, two, -value);
 
         List<Balance> balances = new ArrayList<>();
         balances.add(a);
         balances.add(b);
 
-        LedgerEntry entry = new LedgerEntry(date, name, balances, -1);
+        LedgerEntry entry = new LedgerEntry(this, date, name, balances, -1);
         dbhelper.addEntry(entry);
 
         Toast toast = Toast.makeText(this, "Saved successfully.", Toast.LENGTH_LONG);

@@ -1,6 +1,12 @@
 package com.mpease.ledger.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.support.annotation.BoolRes;
+import android.support.annotation.RequiresApi;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +21,8 @@ import com.mpease.ledger.model.LedgerEntry;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by mpease on 2/23/17.
@@ -27,25 +35,61 @@ public class LedgerAdapter
     private DateFormat dateFormat;
     private Context context;
     private LedgerDatabaseHelper dbHelper;
+    private Map<Integer, Boolean> selected;
 
 
     public LedgerAdapter(Context context, LedgerDatabaseHelper dbHelper) {
         super();
         this.context = context;
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
         this.dbHelper = dbHelper;
         this.entries = dbHelper.getLedgerEntries();
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        selected = new TreeMap<>();
+        dateFormat = new SimpleDateFormat(sharedPreferences
+                .getString("pref_date_format", ""));
     }
 
     public void setEntries(List<LedgerEntry> entries) {
         this.entries = entries;
     }
 
+    public void setCheckboxes(Map<Integer, Boolean> map) {
+        this.selected = map;
+
+    }
+
+    public void setAll() {
+        Boolean select = !hasSelection();
+
+        for (int i = 0; i < entries.size(); i++) {
+            selected.put(i, select);
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public void setSelected(Integer position) {
+        this.selected.put(position, true);
+    }
+
+    public void unsetSelected(Integer position) {
+        this.selected.remove(position);
+    }
+
+    public Map<Integer, Boolean> getSelected() {
+        return selected;
+    }
 
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
         entries = dbHelper.getLedgerEntries();
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        dateFormat = new SimpleDateFormat(sharedPreferences.getString(
+                "pref_date_format", ""
+        ));
     }
 
     @Override
@@ -68,8 +112,19 @@ public class LedgerAdapter
         return false;
     }
 
+    public Boolean isChecked(Integer position) {
+        if (selected.containsKey(position)) {
+            return selected.get(position);
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+
         LedgerEntry entry = entries.get(position);
 
         if (convertView == null) {
@@ -81,9 +136,11 @@ public class LedgerAdapter
         TextView name = (TextView) convertView.findViewById(R.id.list_name);
         name.setText(entry.getName());
         TextView value = (TextView) convertView.findViewById(R.id.list_value);
-        value.setText(entry.getValueString() + " €");
+        value.setText(entry.getValueString() + " "
+                + sharedPreferences.getString("pref_currency_symbol", ""));
 
         CheckBox box = (CheckBox) convertView.findViewById(R.id.checkBox);
+        box.setChecked(isChecked(position));
         box.setTag(position);
 
         return convertView;
@@ -112,5 +169,9 @@ public class LedgerAdapter
     @Override
     public boolean isEnabled(int position) {
         return true;
+    }
+
+    public boolean hasSelection() {
+        return selected.containsValue(true);
     }
 }

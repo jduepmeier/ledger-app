@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="pref_common_settings"
+        android:title="@string/pref_common_settings">
+        <EditTextPreference
+            android:selectAllOnFocus="true"
+            android:key="pref_currency_symbol"
+            android:defaultValue="EUR"
+            android:summary="@string/pref_summary_currency"
+            android:title="@string/currency" />
+
+        <EditTextPreference
+            android:selectAllOnFocus="true"
+            android:key="pref_number_format"
+            android:defaultValue="0.00"
+            android:summary="@string/pref_summary_number_format"
+            android:title="@string/number_format" />
+
+        <EditTextPreference
+            android:selectAllOnFocus="true"
+            android:key="pref_date_format"
+            android:defaultValue="yyyy-MM-dd"
+            android:summary="@string/pref_summary_date_format"
+            android:title="@string/date_format" />
+    </PreferenceCategory>
+</PreferenceScreen>

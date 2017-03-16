@@ -9,14 +9,24 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/delete_item"
+        android:id="@+id/process_item"
         android:orderInCategory="110"
-        android:title="Delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Process"
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/toggle_all"
+        android:orderInCategory="120"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="Toggle"
+        app:showAsAction="always"
+        />
+
+    <item
         android:id="@+id/menu_item_share"
-        android:orderInCategory="110"
+        android:icon="@android:drawable/ic_menu_send"
+        android:orderInCategory="130"
         app:showAsAction="ifRoom"
         android:title="Export" />
 </menu>

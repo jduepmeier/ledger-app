@@ -5,4 +5,12 @@
     <string name="name">Name</string>
     <string name="date">Date</string>
     <string name="send_to">Send to</string>
+    <string name="currency">Currency</string>
+    <string name="pref_common_settings">Common Settings</string>
+    <string name="pref_summary_currency">Default currency symbol</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="number_format">Number Format</string>
+    <string name="pref_summary_number_format">Format for Numbers. See Java NumberFormats</string>
+    <string name="date_format">Date Format</string>
+    <string name="pref_summary_date_format">Format for dates</string>
 </resources>

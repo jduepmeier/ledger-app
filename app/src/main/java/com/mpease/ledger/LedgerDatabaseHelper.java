@@ -25,12 +25,13 @@ import java.util.List;
 
 public class LedgerDatabaseHelper extends SQLiteOpenHelper {
 
-    private final static int DATABASE_VERSION = 1;
+    private final static int DATABASE_VERSION = 2;
     private final static String DATABASE_NAME = "entries.db3";
 
     private final static String SQL_CREATE_ENTRIES = "CREATE TABLE entries(" +
             " id INTEGER PRIMARY KEY," +
             " date TEXT NOT NULL," +
+            " processed BOOLEAN DEFAULT(0)" +
             " name TEXT )";
     private final static String SQL_CREATE_ACCOUNTS = "CREATE TABLE accounts(" +
             " id INTEGER PRIMARY KEY," +
@@ -43,10 +44,14 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
             " account_id INTEGER REFERENCES accounts(id)," +
             " value REAL)";
 
+    private final static String SQL_UPDATE_ENTRIES_V2 = "ALTER TABLE entries ADD COLUMN processed BOOLEAN DEFAULT(0)";
+
     private DateFormat dateFormat;
+    private Context context;
 
     public LedgerDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     }
 
@@ -60,6 +65,9 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+        if (oldVersion == 1 && newVersion == 2) {
+            db.execSQL(SQL_UPDATE_ENTRIES_V2);
+        }
     }
 
     @Override
@@ -90,7 +98,7 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
             String description = cursor.getString(descriptionColumn);
             double value = cursor.getDouble(valueColumn);
 
-            balances.add(new Balance(new Account(accountId, name, description, alias), value));
+            balances.add(new Balance(context, new Account(accountId, name, description, alias), value));
         }
         cursor.close();
 
@@ -100,7 +108,7 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
 
     public List<LedgerEntry> getLedgerEntries() {
         SQLiteDatabase db = getReadableDatabase();
-        String sql = "SELECT * FROM entries ORDER BY date ASC";
+        String sql = "SELECT * FROM entries WHERE NOT processed ORDER BY date ASC";
         List<LedgerEntry> entries = new ArrayList<>();
 
         Cursor cursor = db.rawQuery(sql, null);
@@ -121,7 +129,7 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
                 date = new Date();
             }
 
-            entries.add(new LedgerEntry(date, name, balances, id));
+            entries.add(new LedgerEntry(context, date, name, balances, id));
         }
         cursor.close();
 
@@ -246,5 +254,38 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         }
 
         return names.toArray(new String[0]);
+    }
+
+    public Boolean setProcessed(SQLiteDatabase db, LedgerEntry item) {
+        ContentValues values = new ContentValues(1);
+        values.put("processed", true);
+        try {
+            db.update("entries", values, "id = ?", new String[]{"" + item.getId()});
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public Boolean setProcessed(LedgerEntry item) {
+        SQLiteDatabase db = getWritableDatabase();
+        return setProcessed(db, item);
+    }
+
+    public Boolean setProcessed(List<LedgerEntry> items) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+
+        for (LedgerEntry item : items) {
+            if (!setProcessed(db, item)) {
+                db.endTransaction();
+                return false;
+            }
+        }
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return true;
     }
 }

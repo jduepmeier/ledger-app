@@ -1,7 +1,11 @@
 package com.mpease.ledger.model;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -21,37 +25,47 @@ public class LedgerEntry {
     private String name;
     private List<Balance> balances;
     private DateFormat dateFormat;
+    private Context context;
 
-    public LedgerEntry() {
+    public LedgerEntry(Context context) {
+        this.context = context;
         id = -1;
         name = "";
         date = new Date();
         balances = new ArrayList<>();
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        setDateFormat();
     }
 
-    public LedgerEntry(Date date, String name) {
+    public LedgerEntry(Context context, Date date, String name) {
+        this.context = context;
         id = -1;
         this.date = date;
         this.name = name;
         balances = new ArrayList<>();
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        setDateFormat();
     }
 
-    public LedgerEntry(Date date, String name, List<Balance> balances, Integer id ) {
+    public LedgerEntry(Context context, Date date, String name, List<Balance> balances, Integer id ) {
+        this.context = context;
         this.id = id;
         this.date = date;
         this.name = name;
         this.balances = balances;
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        setDateFormat();
     }
 
-    public LedgerEntry(Date date, String name, List<Balance> balances, Integer id, DateFormat dateFormat) {
+    public LedgerEntry(Context context,Date date, String name, List<Balance> balances, Integer id, DateFormat dateFormat) {
+        this.context = context;
         this.id = id;
         this.date = date;
         this.name = name;
         this.balances = balances;
         this.dateFormat = dateFormat;
+    }
+
+    private void setDateFormat() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        dateFormat = new SimpleDateFormat(sharedPreferences.getString("pref_date_format", ""));
     }
 
     public Integer getId() {
@@ -81,7 +95,8 @@ public class LedgerEntry {
     }
 
     public String getValueString() {
-        DecimalFormat df = new DecimalFormat("0.00");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        DecimalFormat df = new DecimalFormat(sharedPreferences.getString("pref_number_format", ""));
 
         return df.format(this.getValue());
     }

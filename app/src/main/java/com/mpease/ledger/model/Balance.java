@@ -1,6 +1,9 @@
 package com.mpease.ledger.model;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.text.DecimalFormat;
 
@@ -13,11 +16,13 @@ public class Balance {
     private Account account;
     private double value;
     private int entryId;
+    private Context ctx;
 
-    public Balance(Account account, double value) {
+    public Balance(Context ctx, Account account, double value) {
         this.account = account;
         this.value = value;
         this.entryId = -1;
+        this.ctx = ctx;
     }
 
     public void setEntryId(int id) {
@@ -93,14 +98,15 @@ public class Balance {
     }
 
     public String getExportString() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ctx);
         StringBuilder builder = new StringBuilder();
-
         builder.append("\t");
         builder.append(account.getAliasOrName());
         builder.append("\t");
-        DecimalFormat df = new DecimalFormat("0.00");
+        DecimalFormat df = new DecimalFormat(sharedPreferences.getString("pref_number_format", ""));
         builder.append(df.format(value));
-        builder.append(" EUR");
+        builder.append(" ");
+        builder.append(sharedPreferences.getString("pref_currency_symbol", ""));
 
         return builder.toString();
     }

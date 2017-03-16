@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.MenuItemCompat;
@@ -22,6 +23,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.mpease.ledger.activities.SettingsActivity;
 import com.mpease.ledger.adapter.LedgerAdapter;
 import com.mpease.ledger.model.Account;
 import com.mpease.ledger.model.Balance;
@@ -46,13 +48,11 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
     private LedgerDatabaseHelper dbHelper;
     private int lastIndex = 0;
     private LedgerAdapter adapter;
-    private Map<Integer, Boolean> checked;
     private ShareActionProvider shareProvider;
 
     public void gotoAddView(View view) {
         Intent intent = new Intent(this, EditEntryActivity.class);
         startActivityForResult(intent, 1);
-
     }
 
     public void selectCheckbox(View view) {
@@ -60,11 +60,11 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
         int size = 0;
 
         if (box.isChecked()) {
-            size = checked.size();
-            checked.put((int) box.getTag(), true);
+            size = adapter.getSelected().size();
+            adapter.setSelected((Integer) box.getTag());
         } else {
-            checked.remove(box.getTag());
-            size = checked.size();
+            adapter.unsetSelected((Integer) box.getTag());
+            size = adapter.getSelected().size();
         }
 
         if (size < 1) {
@@ -82,7 +82,9 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checked = new TreeMap<>();
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         setContentView(R.layout.activity_ledger_overview);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -112,8 +114,9 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
     private Uri generateExport() {
         StringBuilder builder = new StringBuilder();
 
-        for (int pos : checked.keySet()) {
-            if (checked.get(pos)) {
+        Map<Integer, Boolean> map = adapter.getSelected();
+        for (int pos : map.keySet()) {
+            if (map.get(pos)) {
                 builder.append(adapter.getItem(pos).getExportString());
             }
         }
@@ -186,7 +189,23 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
         sendIntent.setType(getContentResolver().getType(uri));
         sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_to)));
+        invalidateOptionsMenu();
     }
+
+    public void processItems() {
+        Map<Integer, Boolean> map = adapter.getSelected();
+        for (int key : map.keySet()) {
+            if (map.get(key)) {
+                dbHelper.setProcessed((LedgerEntry) adapter.getItem(key));
+            }
+        }
+        adapter.getSelected().clear();
+        adapter.notifyDataSetChanged();
+
+        Toast toast = Toast.makeText(this, "Items marked as processed.", Toast.LENGTH_LONG);
+        invalidateOptionsMenu();
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -198,17 +217,18 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, 1);
                 return true;
             case R.id.menu_item_share:
                 exportAndSend();
                 return true;
-            case R.id.delete_item:
-
-                for (int key : checked.keySet()) {
-                    dbHelper.deleteEntry((LedgerEntry) adapter.getItem(key));
-                }
-                checked.clear();
-                adapter.notifyDataSetChanged();
+            case R.id.toggle_all:
+                adapter.setAll();
+                invalidateOptionsMenu();
+                return true;
+            case R.id.process_item:
+                processItems();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -217,8 +237,8 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (checked.isEmpty()) {
-            menu.findItem(R.id.delete_item).setEnabled(false);
+        if (!adapter.hasSelection()) {
+            menu.findItem(R.id.process_item).setEnabled(false);
             menu.findItem(R.id.menu_item_share).setEnabled(false);
         }
 
