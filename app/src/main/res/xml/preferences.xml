@@ -24,5 +24,15 @@
             android:defaultValue="yyyy-MM-dd"
             android:summary="@string/pref_summary_date_format"
             android:title="@string/date_format" />
+
+        <ListPreference
+            android:key="pref_default_account1"
+            android:title="@string/default_account1"
+            android:defaultValue="1" />
+
+        <ListPreference
+            android:key="pref_default_account2"
+            android:title="@string/default_account2"
+            android:defaultValue="2" />
     </PreferenceCategory>
 </PreferenceScreen>

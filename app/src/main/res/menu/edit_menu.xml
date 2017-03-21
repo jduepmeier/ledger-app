@@ -2,7 +2,7 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:context="com.mpease.ledger.EditEntryActivity">
+    tools:context="com.mpease.ledger.activities.EditEntryActivity">
 
     <item android:title="Save"
         android:id="@+id/save_item"

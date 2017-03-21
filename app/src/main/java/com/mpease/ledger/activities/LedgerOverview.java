@@ -1,17 +1,13 @@
-package com.mpease.ledger;
+package com.mpease.ledger.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,14 +15,9 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.mpease.ledger.activities.SettingsActivity;
+import com.mpease.ledger.LedgerDatabaseHelper;
+import com.mpease.ledger.R;
 import com.mpease.ledger.adapter.LedgerAdapter;
-import com.mpease.ledger.model.Account;
-import com.mpease.ledger.model.Balance;
 import com.mpease.ledger.model.LedgerEntry;
 
 import java.io.File;
@@ -35,13 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 public class LedgerOverview extends AppCompatActivity implements ShareActionProvider.OnShareTargetSelectedListener {
 
@@ -53,6 +39,11 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
     public void gotoAddView(View view) {
         Intent intent = new Intent(this, EditEntryActivity.class);
         startActivityForResult(intent, 1);
+    }
+
+    public void gotoAccountsView() {
+        Intent intent = new Intent(this, AccountsOverview.class);
+        startActivityForResult(intent, 20);
     }
 
     public void selectCheckbox(View view) {
@@ -219,29 +210,32 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, 1);
-                return true;
+                break;
             case R.id.menu_item_share:
                 exportAndSend();
-                return true;
+                break;
+            case R.id.show_accounts:
+                gotoAccountsView();
+                break;
             case R.id.toggle_all:
                 adapter.setAll();
                 invalidateOptionsMenu();
-                return true;
+                break;
             case R.id.process_item:
                 processItems();
-                return true;
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!adapter.hasSelection()) {
-            menu.findItem(R.id.process_item).setEnabled(false);
-            menu.findItem(R.id.menu_item_share).setEnabled(false);
-        }
-
+        Boolean selection = adapter.hasSelection();
+        menu.findItem(R.id.process_item).setEnabled(selection);
+        menu.findItem(R.id.menu_item_share).setEnabled(selection);
         return true;
     }
 

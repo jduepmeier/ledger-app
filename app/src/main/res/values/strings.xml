@@ -13,4 +13,7 @@
     <string name="pref_summary_number_format">Format for Numbers. See Java NumberFormats</string>
     <string name="date_format">Date Format</string>
     <string name="pref_summary_date_format">Format for dates</string>
+    <string name="default_account1">Default Account 1</string>
+    <string name="default_account2">Default Account 2</string>
+    <string name="alias">Alias</string>
 </resources>

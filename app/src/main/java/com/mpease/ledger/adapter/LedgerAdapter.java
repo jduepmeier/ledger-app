@@ -29,95 +29,10 @@ import java.util.TreeMap;
  */
 
 public class LedgerAdapter
-        extends BaseAdapter {
-
-    private List<LedgerEntry> entries;
-    private DateFormat dateFormat;
-    private Context context;
-    private LedgerDatabaseHelper dbHelper;
-    private Map<Integer, Boolean> selected;
-
+        extends GenericAdapter<LedgerEntry> {
 
     public LedgerAdapter(Context context, LedgerDatabaseHelper dbHelper) {
-        super();
-        this.context = context;
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        this.dbHelper = dbHelper;
-        this.entries = dbHelper.getLedgerEntries();
-        selected = new TreeMap<>();
-        dateFormat = new SimpleDateFormat(sharedPreferences
-                .getString("pref_date_format", ""));
-    }
-
-    public void setEntries(List<LedgerEntry> entries) {
-        this.entries = entries;
-    }
-
-    public void setCheckboxes(Map<Integer, Boolean> map) {
-        this.selected = map;
-
-    }
-
-    public void setAll() {
-        Boolean select = !hasSelection();
-
-        for (int i = 0; i < entries.size(); i++) {
-            selected.put(i, select);
-        }
-
-        notifyDataSetChanged();
-    }
-
-    public void setSelected(Integer position) {
-        this.selected.put(position, true);
-    }
-
-    public void unsetSelected(Integer position) {
-        this.selected.remove(position);
-    }
-
-    public Map<Integer, Boolean> getSelected() {
-        return selected;
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-        entries = dbHelper.getLedgerEntries();
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        dateFormat = new SimpleDateFormat(sharedPreferences.getString(
-                "pref_date_format", ""
-        ));
-    }
-
-    @Override
-    public int getCount() {
-        return entries.size();
-    }
-
-    @Override
-    public LedgerEntry getItem(int position) {
-        return entries.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-    public Boolean isChecked(Integer position) {
-        if (selected.containsKey(position)) {
-            return selected.get(position);
-        } else {
-            return false;
-        }
+        super(context, dbHelper);
     }
 
     @Override
@@ -147,31 +62,7 @@ public class LedgerAdapter
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return 0;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return 1;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return entries.isEmpty();
-    }
-
-    @Override
-    public boolean areAllItemsEnabled() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled(int position) {
-        return true;
-    }
-
-    public boolean hasSelection() {
-        return selected.containsValue(true);
+    public List<LedgerEntry> getEntries() {
+        return dbHelper.getLedgerEntries();
     }
 }

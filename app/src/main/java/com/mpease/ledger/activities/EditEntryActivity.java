@@ -1,4 +1,4 @@
-package com.mpease.ledger;
+package com.mpease.ledger.activities;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mpease.ledger.LedgerDatabaseHelper;
+import com.mpease.ledger.R;
 import com.mpease.ledger.adapter.BalanceAdapter;
 import com.mpease.ledger.model.Account;
 import com.mpease.ledger.model.Balance;
@@ -132,8 +134,12 @@ public class EditEntryActivity extends AppCompatActivity {
             return;
         }
 
-        Account one = dbhelper.getOrCreateAccount("Expenses:Dummy1", "first Dummy Account", "Dummy1");
-        Account two = dbhelper.getOrCreateAccount("Expenses:Dummy2", "second Dummy Account", "Dummy2");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Account one = dbhelper.getAccount(
+                Integer.parseInt(sharedPreferences.getString("pref_default_account1", "")));
+        Account two = dbhelper.getAccount(
+                Integer.parseInt(sharedPreferences.getString("pref_default_account2", "")));
 
         Balance a = new Balance(this, one, value);
         Balance b = new Balance(this, two, -value);

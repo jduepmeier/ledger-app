@@ -19,7 +19,7 @@
         </provider>
 
         <activity
-            android:name=".LedgerOverview"
+            android:name=".activities.LedgerOverview"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -37,13 +37,15 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".EditEntryActivity"
+            android:name=".activities.EditEntryActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateVisible"></activity>
+            android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.AccountsOverview" />
+        <activity android:name=".activities.EditAccountActivity"></activity>
     </application>
 
 </manifest>

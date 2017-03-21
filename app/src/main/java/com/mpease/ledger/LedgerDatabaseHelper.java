@@ -288,4 +288,29 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         db.endTransaction();
         return true;
     }
+
+    public List<Account> getAccounts() {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "SELECT * FROM accounts";
+
+        Cursor cursor = db.rawQuery(sql, null);
+        int idColumn = cursor.getColumnIndex("id");
+        int nameColumn = cursor.getColumnIndex("name");
+        int aliasColumn = cursor.getColumnIndex("alias");
+        int descriptionColumn = cursor.getColumnIndex("description");
+
+        List<Account> accounts = new ArrayList<>();
+
+        while(cursor.moveToNext()) {
+            int id = cursor.getInt(idColumn);
+            String alias = cursor.getString(aliasColumn);
+            String name = cursor.getString(nameColumn);
+            String description = cursor.getString(descriptionColumn);
+
+            accounts.add(new Account(id, name, description, alias));
+        }
+        cursor.close();
+
+        return accounts;
+    }
 }

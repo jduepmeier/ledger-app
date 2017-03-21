@@ -7,10 +7,10 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:menu="edit_menu"
-    tools:context="com.mpease.ledger.activities.EditEntryActivity">
+    tools:context="com.mpease.ledger.activities.EditAccountActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
+        android:id="@+id/edit_accounts_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -19,7 +19,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <TextView
-        android:text="@string/date"
+        android:text="@string/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView3" />
@@ -27,12 +27,12 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="date"
+        android:inputType="text"
         android:ems="10"
-        android:id="@+id/edit_date" />
+        android:id="@+id/edit_account_name" />
 
     <TextView
-        android:text="@string/name"
+        android:text="@string/alias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView2">
@@ -43,29 +43,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/edit_name">
-        <requestFocus />
+        android:id="@+id/edit_account_alias">
     </AutoCompleteTextView>
 
-    <TextView
-        android:text="@string/balances"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView" />
-
-    <EditText
-        android:text="0.00"
-        android:inputType="numberDecimal|numberSigned"
-        android:ems="10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:selectAllOnFocus="true"
-        android:id="@+id/edit_value" />
-<!--
-    <ListView
-        android:clickable="false"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/edit_balances" />
--->
 </LinearLayout>

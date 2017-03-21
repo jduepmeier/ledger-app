@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.mpease.ledger.activities.LedgerOverview">
+
+    <item
+        android:id="@+id/accounts_delete_item"
+        android:orderInCategory="110"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Process"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/accounts_toggle_all"
+        android:orderInCategory="120"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="Toggle"
+        app:showAsAction="always"
+        />
+</menu>
