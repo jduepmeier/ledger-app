@@ -16,4 +16,8 @@
     <string name="default_account1">Default Account 1</string>
     <string name="default_account2">Default Account 2</string>
     <string name="alias">Alias</string>
+    <string name="account1">Account 1</string>
+    <string name="account2">Account 2</string>
+    <string name="templates">Templates</string>
+    <string name="accounts">Accounts</string>
 </resources>

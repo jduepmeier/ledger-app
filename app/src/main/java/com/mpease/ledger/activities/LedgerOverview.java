@@ -46,6 +46,11 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
         startActivityForResult(intent, 20);
     }
 
+    public void gotoTemplatesView() {
+        Intent intent = new Intent(this, TemplateOverview.class);
+        startActivityForResult(intent, 30);
+    }
+
     public void selectCheckbox(View view) {
         CheckBox box = (CheckBox) view;
         int size = 0;
@@ -216,6 +221,9 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
                 break;
             case R.id.show_accounts:
                 gotoAccountsView();
+                break;
+            case R.id.show_templates:
+                gotoTemplatesView();
                 break;
             case R.id.toggle_all:
                 adapter.setAll();

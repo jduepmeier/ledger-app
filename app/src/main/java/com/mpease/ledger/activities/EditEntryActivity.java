@@ -24,6 +24,7 @@ import com.mpease.ledger.adapter.BalanceAdapter;
 import com.mpease.ledger.model.Account;
 import com.mpease.ledger.model.Balance;
 import com.mpease.ledger.model.LedgerEntry;
+import com.mpease.ledger.model.Template;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;
@@ -134,12 +135,20 @@ public class EditEntryActivity extends AppCompatActivity {
             return;
         }
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Template template = dbhelper.getTemplateFromName(name);
+        Account one;
+        Account two;
 
-        Account one = dbhelper.getAccount(
-                Integer.parseInt(sharedPreferences.getString("pref_default_account1", "")));
-        Account two = dbhelper.getAccount(
-                Integer.parseInt(sharedPreferences.getString("pref_default_account2", "")));
+        if (template != null) {
+            one = dbhelper.getAccount(template.getAccount1());
+            two = dbhelper.getAccount(template.getAccount2());
+        } else {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            one = dbhelper.getAccount(
+                    Integer.parseInt(sharedPreferences.getString("pref_default_account1", "")));
+            two = dbhelper.getAccount(
+                    Integer.parseInt(sharedPreferences.getString("pref_default_account2", "")));
+        }
 
         Balance a = new Balance(this, one, value);
         Balance b = new Balance(this, two, -value);

@@ -81,4 +81,8 @@ public class Account {
 
         return values;
     }
+
+    public String toString() {
+        return getAliasOrName();
+    }
 }

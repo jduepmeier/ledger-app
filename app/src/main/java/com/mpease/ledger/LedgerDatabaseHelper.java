@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.mpease.ledger.model.Account;
 import com.mpease.ledger.model.Balance;
 import com.mpease.ledger.model.LedgerEntry;
+import com.mpease.ledger.model.Template;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class LedgerDatabaseHelper extends SQLiteOpenHelper {
 
-    private final static int DATABASE_VERSION = 2;
+    private final static int DATABASE_VERSION = 3;
     private final static String DATABASE_NAME = "entries.db3";
 
     private final static String SQL_CREATE_ENTRIES = "CREATE TABLE entries(" +
@@ -43,6 +44,12 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
             " entry_id INTEGER REFERENCES entries(id) ON DELETE CASCADE," +
             " account_id INTEGER REFERENCES accounts(id)," +
             " value REAL)";
+
+    private final static String SQL_CREATE_TEMPLATES = "CREATE TABLE templates(" +
+            " id INTEGER PRIMARY KEY," +
+            " name TEXT UNIQUE NOT NULL," +
+            " account1 INTEGER REFERENCES accounts(id)," +
+            " account2 INTEGER REFERENCES accounts(id))";
 
     private final static String SQL_UPDATE_ENTRIES_V2 = "ALTER TABLE entries ADD COLUMN processed BOOLEAN DEFAULT(0)";
 
@@ -65,8 +72,12 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        if (oldVersion == 1 && newVersion == 2) {
+        if (oldVersion < 2) {
             db.execSQL(SQL_UPDATE_ENTRIES_V2);
+        }
+
+        if (oldVersion < 3) {
+            db.execSQL(SQL_CREATE_TEMPLATES);
         }
     }
 
@@ -104,6 +115,45 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
 
         return balances;
 
+    }
+
+    public void createTemplate(Template template) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        long id = db.insert("templates", null, template.getContentValues());
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public List<Template> getTemplates() {
+
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "SELECT * FROM templates";
+        List<Template> entries = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery(sql, null);
+        int idColumn = cursor.getColumnIndex("id");
+        int nameColumn = cursor.getColumnIndex("name");
+        int account1Column = cursor.getColumnIndex("account1");
+        int account2Column = cursor.getColumnIndex("account2");
+
+        int id;
+        String name;
+        int account1;
+        int account2;
+
+        while (cursor.moveToNext()) {
+            id = cursor.getInt(idColumn);
+            name = cursor.getString(nameColumn);
+            account1 = cursor.getInt(account1Column);
+            account2 = cursor.getInt(account2Column);
+
+            entries.add(new Template(id, name, account1, account2));
+        }
+        cursor.close();
+
+        return entries;
     }
 
     public List<LedgerEntry> getLedgerEntries() {
@@ -312,5 +362,41 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return accounts;
+    }
+
+    public Template getTemplateFromName(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "SELECT * FROM templates WHERE name LIKE ?";
+
+        String[] values = {name};
+
+        Cursor cursor = db.rawQuery(sql, values);
+
+        Template template = null;
+
+        int nameColumn = cursor.getColumnIndex("name");
+        int idColumn = cursor.getColumnIndex("id");
+        int account1Column = cursor.getColumnIndex("account1");
+        int account2Column = cursor.getColumnIndex("account2");
+
+        if (cursor.moveToNext()) {
+            int id = cursor.getInt(idColumn);
+            String templateName = cursor.getString(nameColumn);
+            int account1 = cursor.getInt(account1Column);
+            int account2 = cursor.getInt(account2Column);
+
+            template = new Template(id, name, account1, account2);
+        }
+        cursor.close();
+
+        return template;
+    }
+
+    public void deleteTemplate(int key) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String[] ids = {String.valueOf(key)};
+
+        db.delete("templates", "id = ?", ids);
     }
 }
