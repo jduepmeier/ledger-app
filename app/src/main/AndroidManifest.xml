@@ -46,8 +46,6 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.AccountsOverview" />
         <activity android:name=".activities.EditAccountActivity" />
-        <activity android:name=".activities.TemplateOverview" />
-        <activity android:name=".activities.EditTemplateActivity"></activity>
     </application>
 
 </manifest>

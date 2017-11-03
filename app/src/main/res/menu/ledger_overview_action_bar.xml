@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.mpease.ledger.activities.LedgerOverview">
+
+    <item
+        android:id="@+id/process_item"
+        android:orderInCategory="110"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Process"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/toggle_all"
+        android:orderInCategory="120"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="Toggle"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/menu_item_share"
+        android:icon="@android:drawable/ic_menu_send"
+        android:orderInCategory="130"
+        app:showAsAction="ifRoom"
+        android:title="Export" />
+
+    <item
+        android:id="@+id/menu_item_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:orderInCategory="140"
+        app:showAsAction="always"
+        android:title="Add"/>
+</menu>

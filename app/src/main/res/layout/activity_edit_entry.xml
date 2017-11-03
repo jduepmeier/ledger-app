@@ -15,6 +15,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
+        android:nextFocusForward="@id/edit_date"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
@@ -28,6 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="date"
+        android:nextFocusForward="@id/edit_name"
+        android:nextFocusDown="@id/edit_name"
         android:ems="10"
         android:id="@+id/edit_date" />
 
@@ -42,6 +45,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
+        android:nextFocusForward="@id/edit_value"
+        android:nextFocusDown="@id/edit_value"
+        android:nextFocusUp="@id/edit_date"
         android:ems="10"
         android:id="@+id/edit_name">
         <requestFocus />
@@ -57,15 +63,43 @@
         android:text="0.00"
         android:inputType="numberDecimal|numberSigned"
         android:ems="10"
+        android:nextFocusForward="@id/new_account1"
+        android:nextFocusUp="@id/edit_name"
+        android:nextFocusDown="@id/new_account1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:selectAllOnFocus="true"
         android:id="@+id/edit_value" />
-<!--
-    <ListView
-        android:clickable="false"
+
+    <TextView
+        android:id="@+id/new_account1_text"
+        android:text="@string/account1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/edit_balances" />
--->
+        android:layout_height="wrap_content" />
+
+    <AutoCompleteTextView
+        android:id="@+id/new_account1"
+        android:text="@string/dummy1"
+        android:inputType="textPersonName"
+        android:selectAllOnFocus="true"
+        android:nextFocusForward="@id/new_account2"
+        android:nextFocusDown="@id/new_account2"
+        android:nextFocusUp="@id/edit_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/new_account2_text"
+        android:text="@string/account2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <AutoCompleteTextView
+        android:text="@string/dummy2"
+        android:id="@+id/new_account2"
+        android:inputType="textPersonName"
+        android:nextFocusUp="@id/new_account1"
+        android:selectAllOnFocus="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

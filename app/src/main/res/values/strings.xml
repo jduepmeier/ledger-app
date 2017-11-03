@@ -20,4 +20,8 @@
     <string name="account2">Account 2</string>
     <string name="templates">Templates</string>
     <string name="accounts">Accounts</string>
+    <string name="dummy1">Dummy 1</string>
+    <string name="dummy2">Dummy 2</string>
+    <string name="openDrawer">Open</string>
+    <string name="closeDrawer">Close</string>
 </resources>

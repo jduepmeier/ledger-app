@@ -1,5 +1,6 @@
 package com.mpease.ledger.activities;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,25 +12,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mpease.ledger.LedgerDatabaseHelper;
 import com.mpease.ledger.R;
-import com.mpease.ledger.adapter.BalanceAdapter;
 import com.mpease.ledger.model.Account;
 import com.mpease.ledger.model.Balance;
 import com.mpease.ledger.model.LedgerEntry;
-import com.mpease.ledger.model.Template;
 
 import java.text.DateFormat;
-import java.text.FieldPosition;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,22 +43,23 @@ public class EditEntryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         dbhelper = new LedgerDatabaseHelper(this);
         setContentView(R.layout.activity_edit_entry);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         df = new SimpleDateFormat(sharedPreferences.getString("pref_date_format", ""));
 
+        // set current date
         EditText view = (EditText) findViewById(R.id.edit_date);
         view.setText(df.format(new Date()));
 
-        AutoCompleteTextView nameEdit = (AutoCompleteTextView) findViewById(R.id.edit_name);
+        // auto complete names
+        final AutoCompleteTextView nameEdit = (AutoCompleteTextView) findViewById(R.id.edit_name);
 
         String[] names = dbhelper.getEntryNames();
 
         ArrayAdapter<String> autoCompleteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+
         nameEdit.setAdapter(autoCompleteAdapter);
 
         EditText valueView = (EditText) findViewById(R.id.edit_value);
@@ -74,6 +72,41 @@ public class EditEntryActivity extends AppCompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+
+        final AutoCompleteTextView account1Edit = (AutoCompleteTextView) findViewById(R.id.new_account1);
+        final AutoCompleteTextView account2Edit = (AutoCompleteTextView) findViewById(R.id.new_account2);
+        final EditText valueEdit = (EditText) findViewById(R.id.edit_value);
+
+        Account one = dbhelper.getAccount(
+                Integer.parseInt(sharedPreferences.getString("pref_default_account1", "")));
+        Account two = dbhelper.getAccount(
+                Integer.parseInt(sharedPreferences.getString("pref_default_account2", "")));
+
+        account1Edit.setText(one.getAliasOrName());
+        account2Edit.setText(two.getAliasOrName());
+        String[] accounts = dbhelper.getAccountNames();
+
+        ArrayAdapter<String> autoCompleteAdapterAccount1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, accounts);
+        ArrayAdapter<String> autoCompleteAdapterAccount2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, accounts);
+        account1Edit.setAdapter(autoCompleteAdapterAccount1);
+        account2Edit.setAdapter(autoCompleteAdapterAccount2);
+
+        nameEdit.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String name = (String) parent.getItemAtPosition(position);
+                LedgerEntry entry = dbhelper.getNewestEntry(name);
+
+                if (entry != null) {
+                    List<Balance> balances = entry.getBalances();
+                    valueEdit.setText(entry.getValueString());
+                    if (balances.size() > 1) {
+                        account1Edit.setText(balances.get(0).getNameOrAlias());
+                        account2Edit.setText(balances.get(1).getNameOrAlias());
+                    }
+                }
             }
         });
 
@@ -135,20 +168,13 @@ public class EditEntryActivity extends AppCompatActivity {
             return;
         }
 
-        Template template = dbhelper.getTemplateFromName(name);
-        Account one;
-        Account two;
+        EditText account1 = (EditText) this.findViewById(R.id.new_account1);
+        EditText account2 = (EditText) this.findViewById(R.id.new_account2);
 
-        if (template != null) {
-            one = dbhelper.getAccount(template.getAccount1());
-            two = dbhelper.getAccount(template.getAccount2());
-        } else {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            one = dbhelper.getAccount(
-                    Integer.parseInt(sharedPreferences.getString("pref_default_account1", "")));
-            two = dbhelper.getAccount(
-                    Integer.parseInt(sharedPreferences.getString("pref_default_account2", "")));
-        }
+        String accountName1 = account1.getText().toString();
+        String accountName2 = account2.getText().toString();
+        Account one = dbhelper.getOrCreateAccount(accountName1, "", accountName1);
+        Account two = dbhelper.getOrCreateAccount(accountName2, "", accountName2);
 
         Balance a = new Balance(this, one, value);
         Balance b = new Balance(this, two, -value);

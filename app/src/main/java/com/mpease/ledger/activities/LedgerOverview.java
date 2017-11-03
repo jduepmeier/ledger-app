@@ -1,10 +1,15 @@
 package com.mpease.ledger.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.FileProvider;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
@@ -46,11 +51,6 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
         startActivityForResult(intent, 20);
     }
 
-    public void gotoTemplatesView() {
-        Intent intent = new Intent(this, TemplateOverview.class);
-        startActivityForResult(intent, 30);
-    }
-
     public void selectCheckbox(View view) {
         CheckBox box = (CheckBox) view;
         int size = 0;
@@ -83,7 +83,7 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
 
         setContentView(R.layout.activity_ledger_overview);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         dbHelper = new LedgerDatabaseHelper(this);
@@ -92,12 +92,88 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
         final ListView listView = (ListView) findViewById(R.id.ledger_entries);
 
         listView.setAdapter(adapter);
+
+        final Context ctx = this;
+
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    item.setChecked(!item.isCheckable());
+                    drawerLayout.closeDrawers();
+
+                    int id = item.getItemId();
+
+                    //noinspection SimplifiableIfStatement
+                    switch (id) {
+                        case R.id.action_settings:
+                            Intent intent = new Intent(ctx, SettingsActivity.class);
+                            startActivityForResult(intent, 1);
+                            break;
+                        case R.id.show_accounts:
+                            gotoAccountsView();
+                            break;
+                        default:
+                            return false;
+                    }
+
+                    return true;
+            }
+        });
+
+       ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.openDrawer, R.string.closeDrawer){
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
+
+                super.onDrawerOpened(drawerView);
+            }
+        };
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        switch (id) {
+            case R.id.menu_item_share:
+                exportAndSend();
+                break;
+            case R.id.toggle_all:
+                adapter.setAll();
+                invalidateOptionsMenu();
+                break;
+            case R.id.process_item:
+                processItems();
+                break;
+            case R.id.menu_item_add:
+                Intent intent = new Intent(this, EditEntryActivity.class);
+                startActivityForResult(intent, 1);
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_ledger_overview, menu);
+        getMenuInflater().inflate(R.menu.ledger_overview_action_bar, menu);
         return true;
     }
 
@@ -200,43 +276,6 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
 
         Toast toast = Toast.makeText(this, "Items marked as processed.", Toast.LENGTH_LONG);
         invalidateOptionsMenu();
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivityForResult(intent, 1);
-                break;
-            case R.id.menu_item_share:
-                exportAndSend();
-                break;
-            case R.id.show_accounts:
-                gotoAccountsView();
-                break;
-            case R.id.show_templates:
-                gotoTemplatesView();
-                break;
-            case R.id.toggle_all:
-                adapter.setAll();
-                invalidateOptionsMenu();
-                break;
-            case R.id.process_item:
-                processItems();
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-        return true;
     }
 
     @Override

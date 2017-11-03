@@ -2,8 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.mpease.ledger.activities.LedgerOverview">
+    <group android:checkableBehavior="single">
     <item
         android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
@@ -14,31 +16,5 @@
         android:title="@string/accounts"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/show_templates"
-        android:orderInCategory="105"
-        android:title="@string/templates"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/process_item"
-        android:orderInCategory="110"
-        android:icon="@android:drawable/ic_menu_delete"
-        android:title="Process"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/toggle_all"
-        android:orderInCategory="120"
-        android:icon="@android:drawable/ic_menu_view"
-        android:title="Toggle"
-        app:showAsAction="always"
-        />
-
-    <item
-        android:id="@+id/menu_item_share"
-        android:icon="@android:drawable/ic_menu_send"
-        android:orderInCategory="130"
-        app:showAsAction="ifRoom"
-        android:title="Export" />
+    </group>
 </menu>
