@@ -156,7 +156,7 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
      */
     public LedgerEntry getNewestEntry(String name) {
         SQLiteDatabase db = getReadableDatabase();
-        String sql = "SELECT * FROM entries WHERE NOT processed AND name = ? ORDER BY date DESC LIMIT 1";
+        String sql = "SELECT * FROM entries WHERE name = ? ORDER BY date DESC LIMIT 1";
         String[] args = {name};
 
         Cursor cursor = db.rawQuery(sql, args);
