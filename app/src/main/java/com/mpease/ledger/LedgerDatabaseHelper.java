@@ -25,7 +25,9 @@ import java.util.Locale;
 
 public class LedgerDatabaseHelper extends SQLiteOpenHelper {
 
+    // current database version
     private final static int DATABASE_VERSION = 4;
+    // database path
     private final static String DATABASE_NAME = "entries.db3";
 
     private final static String SQL_CREATE_ENTRIES = "CREATE TABLE entries(" +
@@ -57,12 +59,20 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
     private DateFormat dateFormat;
     private Context context;
 
+    /**
+     * Constructor.
+     * @param context Context for the database.
+     */
     public LedgerDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
         dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
     }
 
+    /**
+     * Function to call when the database is created.
+     * @param db Database connection
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
@@ -73,6 +83,12 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         createAccount(db, "Dummy 2", "Dummy 2 Account", "Dummy2");
     }
 
+    /**
+     * This function is called when the database is upgrade
+     * @param db Database connection
+     * @param oldVersion Database version from.
+     * @param newVersion Database version to.
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -89,13 +105,22 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Function is called on open.
+     * @param db Database connection.
+     */
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
         db.execSQL("PRAGMA foreign_keys=ON;");
     }
 
-    public List<Balance> getBalances(int id) {
+    /**
+     * Returns all balances of the given ledger entry.
+     * @param id id of the ledger entry.
+     * @return list of balances.
+     */
+    private List<Balance> getBalances(int id) {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM balances JOIN accounts ON (account_id = accounts.id) WHERE entry_id = ?";
         String[] types = {String.valueOf(id)};
@@ -122,9 +147,13 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return balances;
-
     }
 
+    /**
+     * Returns the newest ledger entry with the given name.
+     * @param name Name of the ledger entry.
+     * @return Newest entry.
+     */
     public LedgerEntry getNewestEntry(String name) {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM entries WHERE NOT processed AND name = ? ORDER BY date DESC LIMIT 1";
@@ -135,11 +164,17 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToNext()) {
             entry = createLedgerEntry(cursor);
         }
+        cursor.close();
 
         return entry;
     }
 
-    public LedgerEntry createLedgerEntry(Cursor cursor) {
+    /**
+     * Creates a ledger entry object from the given cursor.
+     * @param cursor Database cursor with element.
+     * @return Created entry.
+     */
+    private LedgerEntry createLedgerEntry(Cursor cursor) {
 
         int idColumn = cursor.getColumnIndex("id");
         int nameColumn = cursor.getColumnIndex("name");
@@ -160,6 +195,10 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return new LedgerEntry(context, date, name, balances, id);
     }
 
+    /**
+     * Return all ledger entries that are not processed.
+     * @return List of all entries that are not processed.
+     */
     public List<LedgerEntry> getLedgerEntries() {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM entries WHERE NOT processed ORDER BY date ASC";
@@ -175,6 +214,10 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return entries;
     }
 
+    /**
+     * Deletes an ledger entry.
+     * @param entry Entry to delete.
+     */
     public void deleteEntry(LedgerEntry entry) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -186,6 +229,11 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         db.endTransaction();
     }
 
+    /**
+     * Return the account by id.
+     * @param id Id of the account.
+     * @return Account with the given id.
+     */
     public Account getAccount(int id) {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM accounts WHERE id = ?";
@@ -195,6 +243,11 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return getAccount(cursor);
     }
 
+    /**
+     * Return account from cursor.
+     * @param cursor Database cursor. This function calls moveToNext on the cursor.
+     * @return Returns the account or null if cursor has no next element.
+     */
     private Account getAccount(Cursor cursor) {
         if (!cursor.moveToNext()) {
             return null;
@@ -212,6 +265,12 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return new Account(id, name, description, alias);
     }
 
+    /**
+     * Returns cursor from string or alias.
+     * @param name
+     * @param alias
+     * @return
+     */
     public Account getAccount(String name, String alias) {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM accounts WHERE name = ? OR alias = ?";
@@ -223,12 +282,21 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return a;
     }
 
+    /**
+     * Adds a balance to the database.
+     * @param db Database connection.
+     * @param b Balance to add.
+     */
     private void addBalance(SQLiteDatabase db, Balance b) {
         ContentValues values = b.getContentValues();
 
         db.insert("balances", null, values);
     }
 
+    /**
+     * Adds an entry to the database.
+     * @param entry Ledger entry to add.
+     */
     public void addEntry(LedgerEntry entry) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -248,6 +316,16 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         db.endTransaction();
     }
 
+    /**
+     * Create account in database.
+     *
+     * This happens inside a database transaction (begin and commits itself).
+     * @param db Database connection.
+     * @param name Name of the account.
+     * @param description Description of the account.
+     * @param alias Alias of the account.
+     * @return Id of the created account.
+     */
     public long createAccount(SQLiteDatabase db, String name, String description, String alias) {
 
         ContentValues values = new ContentValues();
@@ -263,12 +341,27 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    /**
+     * Create an account in the database.
+     * @param name Name of the account.
+     * @param description Description of the account.
+     * @param alias Alias of the account.
+     * @return Id of the created account.
+     */
     public long createAccount(String name, String description, String alias) {
         SQLiteDatabase db = getWritableDatabase();
 
         return createAccount(db, name, description, alias);
     }
 
+    /**
+     * Returns the account with the given name or alias.
+     * If no account was found it creates the account.
+     * @param name Name of the account.
+     * @param description Description of the account.
+     * @param alias Alias of the account.
+     * @return Searched account.
+     */
     public Account getOrCreateAccount(String name, String description, String alias) {
 
         Account account = getAccount(name, alias);
@@ -281,6 +374,12 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return new Account((int) id, name, description, alias);
     }
 
+    /**
+     * Returns the distinct names of all entries in the database.
+     *
+     * This is for autocompletion.
+     * @return Array of distinct entry names.
+     */
     public String[] getEntryNames() {
 
         SQLiteDatabase db = getReadableDatabase();
@@ -300,6 +399,12 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return names.toArray(new String[0]);
     }
 
+    /**
+     * Set an entry to processed.
+     * @param db Database connection.
+     * @param item Entry to set.
+     * @return If it was successful.
+     */
     public Boolean setProcessed(SQLiteDatabase db, LedgerEntry item) {
         ContentValues values = new ContentValues(1);
         values.put("processed", true);
@@ -312,11 +417,23 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    /**
+     * Set an entry of processed.
+     * @param item Entry to set.
+     * @return If it was successful.
+     */
     public Boolean setProcessed(LedgerEntry item) {
         SQLiteDatabase db = getWritableDatabase();
         return setProcessed(db, item);
     }
 
+    /**
+     * Set list of items to processed.
+     *
+     * This happens inside of a transaction (begin and end is called inside).
+     * @param items Entries to set.
+     * @return If it was successful.
+     */
     public Boolean setProcessed(List<LedgerEntry> items) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
@@ -333,6 +450,10 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    /**
+     * Return all accounts in database.
+     * @return List of accounts.
+     */
     public List<Account> getAccounts() {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM accounts";
@@ -358,7 +479,12 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         return accounts;
     }
 
-
+    /**
+     * Return the distinct names of accounts.
+     *
+     * This is for autocompletion.
+     * @return Array of account names.
+     */
     public String[] getAccountNames() {
         SQLiteDatabase db = getReadableDatabase();
 
