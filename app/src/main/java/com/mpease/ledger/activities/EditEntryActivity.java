@@ -151,9 +151,12 @@ public class EditEntryActivity extends AppCompatActivity {
         name = nameBox.getText().toString();
 
         EditText valueBox = (EditText) this.findViewById(R.id.edit_value);
+        String valueStr = valueBox.getText().toString();
+
         try {
-            value = Double.parseDouble(valueBox.getText().toString());
+            value = Double.parseDouble(valueStr.replace(",", "."));
         } catch (NumberFormatException e) {
+
             Toast toast = Toast.makeText(this, "Cannot parse value.", Toast.LENGTH_LONG);
             toast.show();
             return;

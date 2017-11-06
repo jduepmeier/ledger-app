@@ -144,7 +144,8 @@ public class Balance {
         builder.append("\t");
         builder.append(account.getAliasOrName());
         builder.append("\t");
-        DecimalFormat df = new DecimalFormat(sharedPreferences.getString("pref_number_format", ""));
+        DecimalFormat df = new DecimalFormat();
+        df.applyLocalizedPattern(sharedPreferences.getString("pref_number_format", ""));
         builder.append(df.format(value));
         builder.append(" ");
         builder.append(sharedPreferences.getString("pref_currency_symbol", ""));

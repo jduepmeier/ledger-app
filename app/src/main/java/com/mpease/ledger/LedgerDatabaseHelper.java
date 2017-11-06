@@ -267,8 +267,8 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Returns cursor from string or alias.
-     * @param name
-     * @param alias
+     * @param name Name of the account.
+     * @param alias Alias of the account.
      * @return
      */
     public Account getAccount(String name, String alias) {
