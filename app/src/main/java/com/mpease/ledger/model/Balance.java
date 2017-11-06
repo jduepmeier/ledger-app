@@ -8,7 +8,8 @@ import android.preference.PreferenceManager;
 import java.text.DecimalFormat;
 
 /**
- * Created by mpease on 2/23/17.
+ * This represents a balance.
+ * Each balance has a account and a value.
  */
 
 public class Balance {
@@ -18,6 +19,12 @@ public class Balance {
     private int entryId;
     private Context ctx;
 
+    /**
+     * Constructs a balance.
+     * @param ctx Context object.
+     * @param account Account of this balance.
+     * @param value Value of this balance.
+     */
     public Balance(Context ctx, Account account, double value) {
         this.account = account;
         this.value = value;
@@ -25,10 +32,21 @@ public class Balance {
         this.ctx = ctx;
     }
 
+    /**
+     * Sets the entry id of this balance.
+     * This is only important for database entries.
+     * @param id Id of the corresponding ledger entry.
+     */
     public void setEntryId(int id) {
+
         entryId = id;
     }
 
+    /**
+     * Returns the alias of the account in the balance.
+     * If the alias is empty the account name will returned.
+     * @return Alias or name of the account.
+     */
     public String getNameOrAlias() {
         if (account == null) {
             return "";
@@ -42,38 +60,53 @@ public class Balance {
         }
     }
 
-    public void setValue(double value) {
-        this.value = value;
-    }
-
+    /**
+     * Sets the name of the account.
+     * @param name Name of the account to set.
+     */
     public void setName(String name) {
         this.account.setName(name);
     }
 
-    public String getAlias() {
-        return account.getAlias();
-    }
 
-    public String getDescription() {
-        return account.getDescription();
-    }
-
+    /**
+     * Return the account of this balance.
+     * @return Account of this balance.
+     */
     public Account getAccount() {
         return account;
     }
 
+    /**
+     * Returns the value of the balance.
+     * @return value of the balance.
+     */
     public double getValue() {
         return value;
     }
 
+    /**
+     * Sets the value of this balance.
+     * @param value value to set.
+     */
+    public void setValue(double value) {
+        this.value = value;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Balance balance = (Balance) o;
 
-        if (Double.compare(balance.value, value) != 0) return false;
+        if (Double.compare(balance.value, value) != 0) {
+            return false;
+        }
         return account.equals(balance.account);
 
     }
@@ -88,6 +121,10 @@ public class Balance {
         return result;
     }
 
+    /**
+     * Returns the content values for database actions.
+     * @return Content values.
+     */
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put("account_id", account.getId());
@@ -97,6 +134,10 @@ public class Balance {
         return values;
     }
 
+    /**
+     * Returns the balance as ledger string for export.
+     * @return Ledger string format.
+     */
     public String getExportString() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ctx);
         StringBuilder builder = new StringBuilder();

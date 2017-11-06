@@ -1,6 +1,5 @@
 package com.mpease.ledger.activities;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -34,8 +33,6 @@ import java.util.List;
 
 public class EditEntryActivity extends AppCompatActivity {
 
-    private List<Account> accounts;
-    private LedgerEntry entry;
     private DateFormat df;
     private LedgerDatabaseHelper dbhelper;
 
@@ -120,12 +117,6 @@ public class EditEntryActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.edit_menu, menu);
         return true;
-    }
-
-    public void onGroupItemClick(MenuItem item) {
-        // One of the group items (using the onClick attribute) was clicked
-        // The item parameter passed here indicates which item it is
-        // All other menu item clicks are handled by onOptionsItemSelected()
     }
 
     @Override

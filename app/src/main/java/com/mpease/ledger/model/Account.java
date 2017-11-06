@@ -3,7 +3,7 @@ package com.mpease.ledger.model;
 import android.content.ContentValues;
 
 /**
- * Created by mpease on 2/23/17.
+ * This implements an ledger account.
  */
 
 public class Account {
@@ -13,6 +13,13 @@ public class Account {
     private String description;
     private String alias;
 
+    /**
+     * Constructs an account.
+     * @param id Id of the account or 0 if not in database.
+     * @param name Name of the account.
+     * @param description Description of the account.
+     * @param alias Alias of the account.
+     */
     public Account(int id, String name, String description, String alias) {
         this.id = id;
         this.name = name;
@@ -20,22 +27,47 @@ public class Account {
         this.alias = alias;
     }
 
+    /**
+     * Returns the id of the account.
+     * @return Id of this account.
+     */
     public int getId() {
+
         return id;
     }
 
+    /**
+     * Returns the name of this account.
+     * @return Name of the account.
+     */
     public String getName() {
+
         return name;
     }
 
+    /**
+     * Returns the description of this account.
+     * @return Description of the account.
+     */
     public String getDescription() {
+
         return description;
     }
 
+    /**
+     * Returns the alias of this account.
+     * @return Alias of this account.
+     */
     public String getAlias() {
+
         return alias;
     }
 
+    /**
+     * Returns the alias of this account.
+     * If the alias is empty the name will be returned.
+     * @return Alias or name of this account.
+     */
     public String getAliasOrName() {
         if (alias == null || alias.isEmpty()) {
             return name;
@@ -59,7 +91,12 @@ public class Account {
 
     }
 
+    /**
+     * Sets the name of this account.
+     * @param name Name to set.
+     */
     public void setName(String name) {
+
         this.name = name;
     }
 
@@ -72,6 +109,11 @@ public class Account {
         return result;
     }
 
+    /**
+     * Returns the content values of this account.
+     * This is needed for database inserts.
+     * @return Content values of this account.
+     */
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put("name", name);
@@ -83,6 +125,7 @@ public class Account {
     }
 
     public String toString() {
+
         return getAliasOrName();
     }
 }

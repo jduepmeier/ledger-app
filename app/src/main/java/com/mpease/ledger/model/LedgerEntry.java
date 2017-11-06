@@ -4,11 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,23 +29,6 @@ public class LedgerEntry {
     private DateFormat dateFormat;
     private Context context;
 
-    public LedgerEntry(Context context) {
-        this.context = context;
-        id = -1;
-        name = "";
-        date = new Date();
-        balances = new ArrayList<>();
-        setDateFormat();
-    }
-
-    public LedgerEntry(Context context, Date date, String name) {
-        this.context = context;
-        id = -1;
-        this.date = date;
-        this.name = name;
-        balances = new ArrayList<>();
-        setDateFormat();
-    }
 
     public LedgerEntry(Context context, Date date, String name, List<Balance> balances, Integer id ) {
         this.context = context;
@@ -52,15 +37,6 @@ public class LedgerEntry {
         this.name = name;
         this.balances = balances;
         setDateFormat();
-    }
-
-    public LedgerEntry(Context context,Date date, String name, List<Balance> balances, Integer id, DateFormat dateFormat) {
-        this.context = context;
-        this.id = id;
-        this.date = date;
-        this.name = name;
-        this.balances = balances;
-        this.dateFormat = dateFormat;
     }
 
     private void setDateFormat() {
