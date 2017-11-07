@@ -62,7 +62,7 @@
     <EditText
         android:text="0.00"
         android:inputType="numberDecimal|numberSigned"
-        android:digits="0123456789.,"
+        android:digits="0123456789.,-"
         android:ems="10"
         android:nextFocusForward="@id/new_account1"
         android:nextFocusUp="@id/edit_name"
