@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ledger</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="name">Name</string>
+    <string name="date">Datum</string>
+    <string name="send_to">Senden</string>
+    <string name="currency">Währung</string>
+    <string name="pref_summary_currency">Standard Währung</string>
+    <string name="title_activity_settings">Einstellungen</string>
+    <string name="number_format">Zahlenformat</string>
+    <string name="pref_summary_number_format">Format zum Anzeigen von Zahlen. Siehe auch Java NumberFormat.</string>
+    <string name="date_format">Datumsformat</string>
+    <string name="pref_summary_date_format">Wie soll ein Datum angezeigt werden.</string>
+    <string name="default_account1">Standardkonto 1</string>
+    <string name="default_account2">Standardkonto 2</string>
+    <string name="alias">Alias</string>
+    <string name="account1">Konto 1</string>
+    <string name="account2">Konto 2</string>
+    <string name="templates">Schablone</string>
+    <string name="accounts">Konten</string>
+    <string name="dummy1">Dummy 1</string>
+    <string name="dummy2">Dummy 2</string>
+    <string name="openDrawer">Öffnen</string>
+    <string name="closeDrawer">Schließen</string>
+    <string name="pref_common_settings">Standardeinstellungen</string>
+    <string name="balances">Buchungsteile</string>
+</resources>
