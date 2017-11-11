@@ -24,8 +24,9 @@
     <string name="closeDrawer">Schließen</string>
     <string name="pref_common_settings">Standardeinstellungen</string>
     <string name="balances">Buchungsteile</string>
-    <string name="account_not_deleted">Could not delete accounts.</string>
-    <string name="accounts_deleted">Accounts deleted.</string>
+    <string name="account_not_deleted">Konnte Konte nicht löschen</string>
+    <string name="accounts_deleted">Konten gelöscht.</string>
     <string name="account_not_found">Konto nicht gefunden</string>
     <string name="account_constraint">Konto wird in mindestens einem Eintrag benutzt</string>
+    <string name="item_processed">Einträge als bearbeitet markiert.</string>
 </resources>

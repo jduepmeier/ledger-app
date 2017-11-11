@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.mpease.ledger.LedgerDatabaseHelper;
 import com.mpease.ledger.R;
 import com.mpease.ledger.adapter.LedgerAdapter;
+import com.mpease.ledger.model.Account;
 import com.mpease.ledger.model.LedgerEntry;
 
 import java.io.File;
@@ -268,13 +269,15 @@ public class LedgerOverview extends AppCompatActivity implements ShareActionProv
         Map<Integer, Boolean> map = adapter.getSelected();
         for (int key : map.keySet()) {
             if (map.get(key)) {
-                dbHelper.setProcessed((LedgerEntry) adapter.getItem(key));
+                dbHelper.setProcessed(adapter.getItem(key));
             }
         }
+
         adapter.getSelected().clear();
         adapter.notifyDataSetChanged();
 
-        Toast toast = Toast.makeText(this, "Items marked as processed.", Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(this, getResources().getString(R.string.item_processed), Toast.LENGTH_LONG);
+        toast.show();
         invalidateOptionsMenu();
     }
 

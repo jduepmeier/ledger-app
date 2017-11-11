@@ -28,4 +28,5 @@
     <string name="accounts_deleted">Accounts deleted.</string>
     <string name="account_not_found">Account  not found</string>
     <string name="account_constraint">Account is used in entries</string>
+    <string name="item_processed">Items marked as processed.</string>
 </resources>
