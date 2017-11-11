@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:menu="edit_menu"
+    tools:context="com.mpease.ledger.activities.EditEntryActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:nextFocusForward="@id/edit_date"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <TextView
+        android:text="@string/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:nextFocusForward="@id/edit_name"
+        android:nextFocusDown="@id/edit_name"
+        android:ems="10"
+        android:id="@+id/edit_date" />
+
+    <TextView
+        android:text="@string/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2">
+    </TextView>
+
+    <AutoCompleteTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:nextFocusForward="@id/edit_value"
+        android:nextFocusDown="@id/edit_value"
+        android:nextFocusUp="@id/edit_date"
+        android:ems="10"
+        android:id="@+id/edit_name">
+        <requestFocus />
+    </AutoCompleteTextView>
+
+    <TextView
+        android:text="@string/balances"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView" />
+
+    <EditText
+        android:text="0.00"
+        android:inputType="numberDecimal|numberSigned"
+        android:digits="0123456789.,-"
+        android:ems="10"
+        android:nextFocusForward="@id/new_account1"
+        android:nextFocusUp="@id/edit_name"
+        android:nextFocusDown="@id/new_account1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:selectAllOnFocus="true"
+        android:id="@+id/edit_value" />
+
+    <TextView
+        android:id="@+id/new_account1_text"
+        android:text="@string/account1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <AutoCompleteTextView
+        android:id="@+id/new_account1"
+        android:text="@string/dummy1"
+        android:inputType="textPersonName"
+        android:selectAllOnFocus="true"
+        android:nextFocusForward="@id/new_account2"
+        android:nextFocusDown="@id/new_account2"
+        android:nextFocusUp="@id/edit_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/new_account2_text"
+        android:text="@string/account2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <AutoCompleteTextView
+        android:text="@string/dummy2"
+        android:id="@+id/new_account2"
+        android:inputType="textPersonName"
+        android:nextFocusUp="@id/new_account1"
+        android:selectAllOnFocus="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
