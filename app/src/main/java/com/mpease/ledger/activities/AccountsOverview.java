@@ -9,10 +9,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mpease.ledger.LedgerDatabaseHelper;
 import com.mpease.ledger.R;
 import com.mpease.ledger.adapter.AccountsAdapter;
+import com.mpease.ledger.model.Account;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class AccountsOverview extends AppCompatActivity {
 
@@ -71,6 +77,25 @@ public class AccountsOverview extends AppCompatActivity {
 
     public void deleteItems() {
 
+        Map<Integer, Boolean> map = adapter.getSelected();
+        List<Account> accounts = new ArrayList<>(map.keySet().size());
+        for (int key : map.keySet()) {
+            if (map.get(key)) {
+                accounts.add(adapter.getItem(key));
+            }
+        }
+
+        String out = dbHelper.deleteAccounts(accounts);
+        if (out == null) {
+            adapter.getSelected().clear();
+            adapter.notifyDataSetChanged();
+            out = getResources().getString(R.string.accounts_deleted);
+        }
+        Toast toast = Toast.makeText(this,
+                               out,
+                               Toast.LENGTH_LONG);
+        toast.show();
+        invalidateOptionsMenu();
     }
 
     @Override

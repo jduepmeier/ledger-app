@@ -3,6 +3,7 @@ package com.mpease.ledger;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -508,5 +509,57 @@ public class LedgerDatabaseHelper extends SQLiteOpenHelper {
         }
 
         return names.toArray(new String[0]);
+    }
+
+    /**
+     * Deletes an account
+     *
+     * This method trows SQLiteConstraint Exception if the account is used
+     * within at least one ledger entry.
+     * @param db Database connection to use.
+     * @param item Account to deleted.
+     * @return Returns true if at least one account was deleted.
+     *
+     */
+    private boolean deleteAccount(SQLiteDatabase db, Account item) {
+
+        String[] items = {Integer.toString(item.getId())};
+
+        return db.delete("accounts", "id = ?", items) > 0;
+    }
+
+    /**
+     * Deletes the given accounts.
+     *
+     * This happens inside a transaction.
+     * If one item cannot be deleted the transaction will be rolled back.
+     * @param items list of accounts to delete.
+     * @return Returns null if the action was successful. Else it returns the
+     *         localized message why the deletion was not successful.
+     */
+    public String deleteAccounts(List<Account> items) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        String out = null;
+        for (Account item : items) {
+            try {
+                if (!deleteAccount(db, item)) {
+                    out = context.getResources().getString(R.string.account_not_found)
+                          + ": " + item.getAliasOrName();
+                    break;
+                }
+            } catch (SQLiteConstraintException e) {
+                out = context.getResources().getString(R.string.account_constraint)
+                      + ": " + item.getAliasOrName();
+                break;
+            }
+        }
+
+        if (out == null) {
+            db.setTransactionSuccessful();
+        }
+        db.endTransaction();
+        return out;
     }
 }

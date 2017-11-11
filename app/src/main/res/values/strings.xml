@@ -24,4 +24,8 @@
     <string name="dummy2">Dummy 2</string>
     <string name="openDrawer">Open</string>
     <string name="closeDrawer">Close</string>
+    <string name="account_not_deleted">Could not delete accounts.</string>
+    <string name="accounts_deleted">Accounts deleted.</string>
+    <string name="account_not_found">Account  not found</string>
+    <string name="account_constraint">Account is used in entries</string>
 </resources>
