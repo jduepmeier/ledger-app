@@ -97,6 +97,7 @@ public class LedgerEntry {
             builder.append(b.getExportString());
             builder.append("\n");
         }
+        builder.append("\n");
 
         return builder.toString();
     }

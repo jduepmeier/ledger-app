@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * This represents a balance.
@@ -144,8 +146,8 @@ public class Balance {
         builder.append("\t");
         builder.append(account.getAliasOrName());
         builder.append("\t");
-        DecimalFormat df = new DecimalFormat();
-        df.applyLocalizedPattern(sharedPreferences.getString("pref_number_format", ""));
+        DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
+        df.applyPattern("0.00");
         builder.append(df.format(value));
         builder.append(" ");
         builder.append(sharedPreferences.getString("pref_currency_symbol", ""));
